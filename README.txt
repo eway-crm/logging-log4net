@@ -1,7 +1,7 @@
 compile-net-2.0-cp
 ==================
 
-We use this version to build lightweight version of log4net,
+We use this target to build lightweight version of log4net,
 that can be used in SQL CLR.
 
 Just execute build-lightweight.bat.
