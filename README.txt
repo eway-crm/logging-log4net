@@ -1,10 +1,17 @@
+compile-net-2.0-cp
+==================
+
+We use this version to build lightweight version of log4net,
+that can be used in SQL CLR.
+
+Just execute build-lightweight.bat.
+
 Project Status
 ==============
 
 Apache log4net is a sub project of the Apache Logging Services project. 
 Apache log4net graduated from the Apache Incubator in February 2007.
 Web site: http://logging.apache.org/log4net
-
 
 Documentation
 =============
@@ -27,4 +34,3 @@ Agreement <http://www.apache.org/licenses/#clas>.
 
 github pull requests are one way to contribute, but our real issue
 tracker is JIRA <https://issues.apache.org/jira/browse/LOG4NET>.
-

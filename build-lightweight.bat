@@ -1,0 +1,1 @@
+build.cmd compile-net-2.0-cp "-D:project.build.config=release"

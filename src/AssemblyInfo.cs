@@ -53,7 +53,9 @@ using System.Runtime.CompilerServices;
 // associated with an assembly.
 //
 
-#if (CLI_1_0)
+#if (NET_2_0_LIGHT)
+[assembly: AssemblyTitle("Apache log4net for .NET Framework 2.0")]
+#elif (CLI_1_0)
 [assembly: AssemblyInformationalVersionAttribute("2.0.9.0-.CLI 1.0")]
 [assembly: AssemblyTitle("Apache log4net for CLI 1.0 Compatible Frameworks")]
 #elif (NET_1_0)
