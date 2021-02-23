@@ -19,6 +19,9 @@
 
 using System;
 using System.IO;
+#if !NETCF && !NETSTANDARD1_3
+using System.Runtime.Serialization;
+#endif
 using System.Text;
 using System.Threading;
 using log4net.Util;
@@ -138,12 +141,29 @@ namespace log4net.Appender
 		/// </summary>
 		private sealed class LockingStream : Stream, IDisposable
 		{
+#if !NETCR
+			[Serializable]
+#endif
 			public sealed class LockStateException : LogException
 			{
 				public LockStateException(string message)
 					: base(message)
 				{
 				}
+
+				public LockStateException()
+				{
+				}
+
+				public LockStateException(string message, Exception innerException) : base(message, innerException)
+				{
+				}
+
+#if !NETCR && !NETSTANDARD1_3
+				private LockStateException(SerializationInfo info, StreamingContext context) : base(info, context) 
+				{
+				}
+#endif
 			}
 
 			private Stream m_realStream = null;
@@ -945,7 +965,7 @@ namespace log4net.Appender
 		/// the application base directory.
 		/// </para>
 		/// </remarks>
-		virtual public string File
+		public virtual string File
 		{
 			get { return m_fileName; }
 			set { m_fileName = value; }
@@ -1081,7 +1101,7 @@ namespace log4net.Appender
 		/// This will cause the file to be opened.
 		/// </para>
 		/// </remarks>
-		override public void ActivateOptions()
+		public override void ActivateOptions()
 		{
 			base.ActivateOptions();
 
@@ -1125,7 +1145,7 @@ namespace log4net.Appender
 		/// Resets the filename and the file stream.
 		/// </para>
 		/// </remarks>
-		override protected void Reset()
+		protected override void Reset()
 		{
 			base.Reset();
 			m_fileName = null;
@@ -1134,7 +1154,7 @@ namespace log4net.Appender
 		/// <summary>
 		/// Close this appender instance. The underlying stream or writer is also closed.
 		/// </summary>
-		override protected void OnClose()
+		protected override void OnClose()
 		{
 			base.OnClose();
 			m_lockingModel.OnClose();
@@ -1149,7 +1169,7 @@ namespace log4net.Appender
 		/// successfully opened.
 		/// </para>
 		/// </remarks>
-		override protected void PrepareWriter()
+		protected override void PrepareWriter()
 		{
 			SafeOpenFile(m_fileName, m_appendToFile);
 		}
@@ -1168,7 +1188,7 @@ namespace log4net.Appender
 		/// The format of the output will depend on the appender's layout.
 		/// </para>
 		/// </remarks>
-		override protected void Append(LoggingEvent loggingEvent)
+		protected override void Append(LoggingEvent loggingEvent)
 		{
 			if (m_stream.AcquireLock())
 			{
@@ -1194,7 +1214,7 @@ namespace log4net.Appender
 		/// the stream.
 		/// </para>
 		/// </remarks>
-		override protected void Append(LoggingEvent[] loggingEvents)
+		protected override void Append(LoggingEvent[] loggingEvents)
 		{
 			if (m_stream.AcquireLock())
 			{
@@ -1317,7 +1337,7 @@ namespace log4net.Appender
 		/// Errors are passed to the <see cref="TextWriterAppender.ErrorHandler"/>.
 		/// </para>
 		/// </remarks>
-		virtual protected void SafeOpenFile(string fileName, bool append)
+		protected virtual void SafeOpenFile(string fileName, bool append)
 		{
 			try
 			{
@@ -1344,7 +1364,7 @@ namespace log4net.Appender
 		/// for the <paramref name="fileName"/> specified exists.
 		/// </para>
 		/// </remarks>
-		virtual protected void OpenFile(string fileName, bool append)
+		protected virtual void OpenFile(string fileName, bool append)
 		{
 			if (LogLog.IsErrorEnabled)
 			{
@@ -1407,9 +1427,12 @@ namespace log4net.Appender
 		/// data using a <c>System.Security.Cryptography.CryptoStream</c>.
 		/// </para>
 		/// </remarks>
-		virtual protected void SetQWForFiles(Stream fileStream)
+		protected virtual void SetQWForFiles(Stream fileStream)
 		{
-			SetQWForFiles(new StreamWriter(fileStream, m_encoding));
+#pragma warning disable CA2000 // Dispose objects before losing scope
+			StreamWriter writer = new StreamWriter(fileStream, m_encoding);
+#pragma warning restore CA2000 // Dispose objects before losing scope
+			SetQWForFiles(writer);
 		}
 
 		/// <summary>
@@ -1422,7 +1445,7 @@ namespace log4net.Appender
 		/// wrap the <see cref="TextWriter"/> in some way.
 		/// </para>
 		/// </remarks>
-		virtual protected void SetQWForFiles(TextWriter writer)
+		protected virtual void SetQWForFiles(TextWriter writer)
 		{
 			QuietWriter = new QuietTextWriter(writer, ErrorHandler);
 		}
@@ -1495,7 +1518,7 @@ namespace log4net.Appender
 		/// Used by the internal logger to record the Type of the
 		/// log message.
 		/// </remarks>
-		private readonly static Type declaringType = typeof(FileAppender);
+		private static readonly Type declaringType = typeof(FileAppender);
 
 		#endregion Private Static Fields
 	}
