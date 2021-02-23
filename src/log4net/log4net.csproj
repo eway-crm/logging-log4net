@@ -24,7 +24,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <TargetFrameworks>net20;net35;net35-client;net40;net40-client;net45;netstandard1.3;netstandard2.0</TargetFrameworks>
-    <Configurations>Debug;Release</Configurations>
+    <Configurations>Debug;Release;Release20CP</Configurations>
     <LangVersion>latest</LangVersion>
     <RootNamespace>log4net</RootNamespace>
     <AssemblyName>log4net</AssemblyName>
@@ -103,6 +103,11 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)'=='Release' ">
     <DefineConstants>TRACE;STRONG;$(DefineConstants)</DefineConstants>
+    <DebugType>none</DebugType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release20CP'">
+    <DefineConstants>TRACE;STRONG;NET_2_0;CLIENT_PROFILE;NET_2_0_LIGHT</DefineConstants>
     <DebugType>none</DebugType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>

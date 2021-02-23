@@ -1,1 +1,1 @@
-build.cmd compile-net-2.0-cp "-D:project.build.config=release"
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" src\log4net\log4net.csproj /p:TargetFrameworks=net20 /p:Configuration=Release20CP /p:Platform=AnyCPU /v:minimal
